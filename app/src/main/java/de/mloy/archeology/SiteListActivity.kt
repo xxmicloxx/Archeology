@@ -1,10 +1,17 @@
 package de.mloy.archeology
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import de.mloy.archeology.ui.sitelist.SiteListFragment
 
-class SiteListActivity : AppCompatActivity() {
+class SiteListActivity : AppActivity() {
+
+    companion object {
+        fun create(ctx: Context): Intent {
+            return Intent(ctx, SiteListActivity::class.java)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

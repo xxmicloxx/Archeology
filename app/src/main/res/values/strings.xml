@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Archeology</string>
+    <string name="action_settings">Settings</string>
+    <string name="splash_title">Nice archeology app</string>
+</resources>

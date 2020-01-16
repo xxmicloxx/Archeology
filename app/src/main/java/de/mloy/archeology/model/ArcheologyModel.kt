@@ -11,7 +11,7 @@ data class Site(
     var description: String = "",
     var images: List<String> = listOf(),
     var location: Location = Location(),
-    var visited: Boolean = false,
+    var isVisited: Boolean = false,
     var dateVisited: Date? = null,
     var notes: String = ""
 ) : Parcelable

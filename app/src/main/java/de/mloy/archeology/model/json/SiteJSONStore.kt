@@ -48,7 +48,7 @@ class SiteJSONStore(private val context: Context) : SiteStore {
             description = site.description
             images = site.images
             location = site.location
-            visited = site.visited
+            isVisited = site.isVisited
             dateVisited = site.dateVisited
             notes = site.notes
         }

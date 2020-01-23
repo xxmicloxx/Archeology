@@ -11,10 +11,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".ui.editlocation.EditLocationActivity"
+            android:label="@string/edit_location_title"
+            android:parentActivityName=".ui.site.SiteActivity" />
+        <activity
+            android:name=".ui.site.SiteActivity"
+            android:label="@string/edit_site_title"
+            android:parentActivityName=".ui.sitelist.SiteListActivity" />
         <activity
             android:name=".ui.sitelist.SiteListActivity"
             android:label="@string/sitelist_title" />
-
         <activity
             android:name=".ui.splash.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">

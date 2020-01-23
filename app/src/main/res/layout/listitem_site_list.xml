@@ -5,6 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="8dp"
     app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,6 +19,7 @@
             android:id="@+id/previewImage"
             android:layout_width="80dp"
             android:layout_height="0dp"
+            android:transitionName="image"
             android:contentDescription="@string/sitelist_preview_image"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -22,13 +27,19 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <CheckBox
+        <ImageView
             android:id="@+id/visitedBox"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+
+            android:layout_marginEnd="8dp"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:contentDescription="@string/string_location_visited"
+            app:layout_constraintBottom_toBottomOf="@id/titleTextView"
+
+            app:layout_constraintTop_toTopOf="@id/titleTextView"
+            app:srcCompat="@drawable/ic_location_check_black_24dp" />
 
         <TextView
             android:id="@+id/titleTextView"
@@ -43,7 +54,7 @@
             android:singleLine="true"
             android:text="Title of the site asdf asdfasfasfsdfasf fasdfasdfasdf sfsf"
 
-            android:textAppearance="?attr/textAppearanceListItem"
+            android:textAppearance="?attr/textAppearanceBody1"
             app:layout_constraintEnd_toStartOf="@id/visitedBox"
             app:layout_constraintStart_toEndOf="@id/previewImage"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,8 +67,7 @@
 
             android:layout_marginTop="4dp"
 
-            android:text="@string/sitelist_latitude"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            android:text="@string/latitude_value"
             app:layout_constraintEnd_toEndOf="@id/titleTextView"
 
             app:layout_constraintStart_toStartOf="@id/titleTextView"
@@ -68,8 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
-            android:text="@string/sitelist_longitude"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            android:text="@string/longitude_value"
             app:layout_constraintEnd_toEndOf="@id/titleTextView"
 
             app:layout_constraintStart_toStartOf="@id/titleTextView"

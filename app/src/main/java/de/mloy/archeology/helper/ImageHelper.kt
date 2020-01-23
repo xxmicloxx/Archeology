@@ -1,20 +1,14 @@
 package de.mloy.archeology.helper
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
+import android.content.Intent
+import de.mloy.archeology.R
 
-fun readImageFromPath(context: Context, path: String): Bitmap? {
-    val uri = Uri.parse(path) ?: return null
-    try {
-        val parcelFD = context.contentResolver.openFileDescriptor(uri, "r")
-        val fd = parcelFD?.fileDescriptor
-        val bitmap = BitmapFactory.decodeFileDescriptor(fd)
-        parcelFD?.close()
-        return bitmap
-    } catch (e: Exception) {
+fun createImagePickerIntent(ctx: Context): Intent {
+    val intent = Intent().apply {
+        type = "image/*"
+        action = Intent.ACTION_OPEN_DOCUMENT
+        addCategory(Intent.CATEGORY_OPENABLE)
     }
-
-    return null
+    return Intent.createChooser(intent, ctx.getString(R.string.site_image_select))
 }

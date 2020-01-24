@@ -66,10 +66,19 @@ class SiteJSONStore(private val context: Context) : SiteStore {
 
     override fun delete(site: Site) {
         sites.removeAll { it.id == site.id }
+        serialize()
     }
 
     override fun findById(id: Long): Site? {
         return sites.find { it.id == id }
+    }
+
+    override fun count(): Int {
+        return sites.size
+    }
+
+    override fun countVisited(): Int {
+        return sites.count { it.isVisited }
     }
 
     private fun serialize() {

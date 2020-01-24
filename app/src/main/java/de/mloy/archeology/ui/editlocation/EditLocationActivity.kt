@@ -157,7 +157,7 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.edit_location, menu)
+        menuInflater.inflate(R.menu.activity_edit_location, menu)
         return true
     }
 

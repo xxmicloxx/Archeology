@@ -41,4 +41,26 @@
     <string name="site_notes_hint">Notes</string>
     <string name="site_missing_title_message">You need to enter a title</string>
     <string name="string_location_visited">Location visited</string>
+    <string name="settings">Settings</string>
+    <string name="login_overline">Login</string>
+    <string name="settings_password_hint">Enter new password…</string>
+    <string name="settings_password_retype_hint">Retype password…</string>
+    <string name="change_password">Change password</string>
+    <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="password_changed">Password successfully changed</string>
+    <string name="password_must_not_be_empty">Password cannot be empty</string>
+    <string name="stats_overline">Stats</string>
+    <string name="total_sites">Total Sites</string>
+    <string name="total_sites_icon_description">Total Sites icon</string>
+    <string name="visited_sites_icon_description">Visited Sites icon</string>
+    <string name="visited_sites">Visited Sites</string>
+    <string name="login_title">Login</string>
+    <string name="login_email_hint">E-Mail</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_required">Login required</string>
+    <string name="splash_icon_description">Splash icon</string>
+    <string name="register">Register</string>
+    <string name="login">Log in</string>
+    <string name="login_icon_description">Login icon</string>
+    <string name="log_out">Log out</string>
 </resources>

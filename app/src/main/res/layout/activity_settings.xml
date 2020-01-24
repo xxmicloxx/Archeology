@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="presenter"
+            type="de.mloy.archeology.ui.settings.SettingsPresenter" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/toolbar" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/loginOverline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+
+                    android:text="@string/login_overline"
+                    android:textAppearance="?attr/textAppearanceOverline"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/emailView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+
+                    android:gravity="center"
+                    android:text="@{presenter.vm.email, default=`test@email.com`}"
+                    android:textAppearance="?attr/textAppearanceBody1"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/loginOverline" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/emailView">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/settings_password_hint"
+                        android:inputType="textPassword"
+                        android:text="@={presenter.vm.newPassword}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordRetypedLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/passwordLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordRetypedEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/settings_password_retype_hint"
+                        android:inputType="textPassword"
+                        android:text="@={presenter.vm.newPasswordRetyped}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/changePasswordButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+
+                    android:onClick="@{() -> presenter.changePassword()}"
+
+                    android:text="@string/change_password"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/passwordRetypedLayout" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="?android:attr/listDivider"
+
+                    app:layout_constraintTop_toBottomOf="@id/changePasswordButton" />
+
+                <TextView
+                    android:id="@+id/statsOverline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+
+                    android:text="@string/stats_overline"
+                    android:textAppearance="?attr/textAppearanceOverline"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/changePasswordButton" />
+
+                <ImageView
+                    android:id="@+id/markerIcon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+
+                    android:contentDescription="@string/total_sites_icon_description"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/statsOverline"
+                    app:srcCompat="@drawable/ic_location_on_black_24dp" />
+
+                <TextView
+                    android:id="@+id/totalSitesCaptionView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+
+                    android:text="@string/total_sites"
+
+                    app:layout_constraintStart_toEndOf="@id/markerIcon"
+                    app:layout_constraintTop_toTopOf="@id/markerIcon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="@{presenter.vm.totalSites.toString(), default=300}"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+
+                    app:layout_constraintStart_toStartOf="@id/totalSitesCaptionView"
+                    app:layout_constraintTop_toBottomOf="@id/totalSitesCaptionView" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/centerGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <ImageView
+                    android:id="@+id/markerVisitedIcon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+
+                    android:contentDescription="@string/visited_sites_icon_description"
+
+                    app:layout_constraintStart_toEndOf="@id/centerGuideline"
+                    app:layout_constraintTop_toTopOf="@id/markerIcon"
+
+                    app:srcCompat="@drawable/ic_location_check_black_24dp" />
+
+                <TextView
+                    android:id="@+id/visitedSitesCaptionView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+
+                    android:text="@string/visited_sites"
+
+                    app:layout_constraintStart_toEndOf="@id/markerVisitedIcon"
+                    app:layout_constraintTop_toTopOf="@id/markerVisitedIcon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="@{presenter.vm.visitedSites.toString(), default=30}"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+
+                    app:layout_constraintStart_toStartOf="@id/visitedSitesCaptionView"
+                    app:layout_constraintTop_toBottomOf="@id/visitedSitesCaptionView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

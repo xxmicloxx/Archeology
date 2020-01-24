@@ -26,4 +26,6 @@ interface SiteStore {
     fun update(site: Site)
     fun delete(site: Site)
     fun findById(id: Long): Site?
+    fun count(): Int
+    fun countVisited(): Int
 }

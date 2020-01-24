@@ -3,12 +3,12 @@ package de.mloy.archeology.ui.splash
 import android.os.Bundle
 import de.mloy.archeology.BaseActivity
 import de.mloy.archeology.R
-import de.mloy.archeology.ui.sitelist.SiteListActivity
+import de.mloy.archeology.ui.login.LoginActivity
 
 class SplashActivity : BaseActivity() {
 
     companion object {
-        private const val SPLASH_DELAY: Long = 3000
+        private const val SPLASH_DELAY: Long = 1500
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun onSplashTimeout() {
-        startActivity(SiteListActivity.create(this))
+        startActivity(LoginActivity.create(this))
         overridePendingTransition(
             android.R.anim.fade_in,
             R.anim.hold

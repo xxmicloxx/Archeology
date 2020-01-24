@@ -136,7 +136,7 @@ class SiteActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.site, menu)
+        menuInflater.inflate(R.menu.activity_site, menu)
 
         if (!presenter.vm.edit) {
             menu.findItem(R.id.delete).isVisible = false

@@ -76,9 +76,10 @@ class SiteViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun setVisited(visited: Boolean = true) {
-        if (visited) {
+        val wasVisited = getVisited().value!!
+        if (visited && !wasVisited) {
             getDateVisited().value = LocalDate.now()
-        } else {
+        } else if (!visited && wasVisited) {
             getDateVisited().value = null
         }
         getVisited().value = visited

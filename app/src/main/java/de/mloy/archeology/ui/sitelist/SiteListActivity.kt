@@ -14,6 +14,8 @@ import de.mloy.archeology.BaseActivity
 import de.mloy.archeology.R
 import de.mloy.archeology.getViewModel
 import de.mloy.archeology.model.Site
+import de.mloy.archeology.ui.login.LoginActivity
+import de.mloy.archeology.ui.settings.SettingsActivity
 import de.mloy.archeology.ui.site.SiteActivity
 
 class SiteListActivity : BaseActivity() {
@@ -55,7 +57,7 @@ class SiteListActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.sitelist, menu)
+        menuInflater.inflate(R.menu.activity_sitelist, menu)
         return true
     }
 
@@ -64,6 +66,20 @@ class SiteListActivity : BaseActivity() {
             R.id.add -> {
                 val intent = SiteActivity.create(this)
                 startActivityForResult(intent, RELOAD_REQUEST_CODE)
+                return true
+            }
+
+            R.id.settings -> {
+                val intent = SettingsActivity.create(this)
+                startActivity(intent)
+                return true
+            }
+
+            R.id.logout -> {
+                // go to login activity
+                val intent = LoginActivity.create(this)
+                startActivity(intent)
+                finish()
                 return true
             }
         }

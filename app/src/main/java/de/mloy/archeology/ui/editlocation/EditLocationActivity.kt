@@ -19,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import de.mloy.archeology.BaseActivity
 import de.mloy.archeology.R
 import de.mloy.archeology.getViewModel
@@ -69,6 +70,7 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
 
     private lateinit var latView: TextView
     private lateinit var lngView: TextView
+    private lateinit var titleView: TextView
 
     private var map: GoogleMap? = null
     private var marker: Marker? = null
@@ -96,7 +98,7 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
 
         setupUI(enableUp = true)
 
-        val titleView = findViewById<TextView>(R.id.titleView)
+        titleView = findViewById<TextView>(R.id.titleView)
         latView = findViewById(R.id.latView)
         lngView = findViewById(R.id.lngView)
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -197,7 +199,17 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
             }
 
             R.id.gps -> {
-                setGps(!gpsOn)
+                val locating = !gpsOn
+                setGps(locating)
+
+                val str = if (locating) {
+                    R.string.started_location_finding
+                } else {
+                    R.string.stopped_location_finding
+                }
+
+                Snackbar.make(titleView, str, Snackbar.LENGTH_SHORT).show()
+
                 return true
             }
         }

@@ -5,26 +5,27 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import de.mloy.archeology.BaseActivity
 import de.mloy.archeology.R
 import de.mloy.archeology.getViewModel
 import de.mloy.archeology.model.Site
+import de.mloy.archeology.model.firebase.SiteFirebaseStore
 import de.mloy.archeology.ui.login.LoginActivity
 import de.mloy.archeology.ui.map.MapActivity
 import de.mloy.archeology.ui.settings.SettingsActivity
 import de.mloy.archeology.ui.site.SiteActivity
 
-class SiteListActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class SiteListActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
+    SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         const val RELOAD_REQUEST_CODE = 0
@@ -64,18 +65,18 @@ class SiteListActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
             layoutManager = LinearLayoutManager(this@SiteListActivity)
         }
 
-        val emptyView = findViewById<TextView>(R.id.emptyText)
+        val swipeContainer = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
 
+        val adapter = SiteListAdapter(listOf(), this)
+        siteList.adapter = adapter
         viewModel.getSites().observe(this, Observer {
-            siteList.adapter = SiteListAdapter(it, this)
-            if (it.isEmpty()) {
-                siteList.visibility = View.GONE
-                emptyView.visibility = View.VISIBLE
-            } else {
-                siteList.visibility = View.VISIBLE
-                emptyView.visibility = View.GONE
-            }
+            adapter.sites = it
+            adapter.notifyDataSetChanged()
+
+            swipeContainer.isRefreshing = false
         })
+
+        swipeContainer.setOnRefreshListener(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -133,7 +134,7 @@ class SiteListActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
         when (item.itemId) {
             R.id.map -> {
                 val intent = MapActivity.create(this)
-                startActivity(intent)
+                startActivityForResult(intent, RELOAD_REQUEST_CODE)
             }
 
             R.id.settings -> {
@@ -157,5 +158,17 @@ class SiteListActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
 
         drawer.closeDrawers()
         return true
+    }
+
+    override fun onRefresh() {
+        // reload data from remote
+        val store = viewModel.siteStore as? SiteFirebaseStore
+        if (store != null) {
+            store.fetchSites {
+                viewModel.reload()
+            }
+        } else {
+            viewModel.reload()
+        }
     }
 }

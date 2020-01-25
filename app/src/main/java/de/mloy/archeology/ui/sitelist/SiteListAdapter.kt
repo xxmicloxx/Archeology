@@ -17,8 +17,9 @@ import com.bumptech.glide.request.target.Target
 import de.mloy.archeology.R
 import de.mloy.archeology.model.Site
 
-class SiteListAdapter(private val sites: List<Site>, private val activity: SiteListActivity) :
+class SiteListAdapter(var sites: List<Site>, private val activity: SiteListActivity) :
     RecyclerView.Adapter<SiteListAdapter.ViewHolder>() {
+
     inner class ViewHolder(view: CardView) : RecyclerView.ViewHolder(view) {
         private val context = view.context
         private val title = view.findViewById<TextView>(R.id.titleTextView)

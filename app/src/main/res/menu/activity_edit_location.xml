@@ -3,8 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/gps"
+        android:icon="@drawable/ic_location_disabled_white_24dp"
+        android:title="@string/enable_locating"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/unset"
         android:icon="@drawable/ic_location_off_white_24dp"
         android:title="@string/unset_location"
         app:showAsAction="ifRoom" />
+
 </menu>

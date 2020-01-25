@@ -3,6 +3,7 @@ package de.mloy.archeology.ui.editlocation
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.transition.ChangeBounds
 import android.transition.TransitionInflater
@@ -10,21 +11,31 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import de.mloy.archeology.BaseActivity
 import de.mloy.archeology.R
 import de.mloy.archeology.getViewModel
+import de.mloy.archeology.helper.checkLocationPermissions
+import de.mloy.archeology.helper.createDefaultLocationRequest
 import de.mloy.archeology.model.Location
 import de.mloy.archeology.model.toCameraUpdate
 import de.mloy.archeology.model.toLatLng
+import de.mloy.archeology.model.toModelLocation
 
 class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
     GoogleMap.OnMarkerClickListener {
 
     companion object {
+        private const val REQUEST_LOCATION_CODE = 0
+
         const val EXTRA_LOCATION = "location"
 
         private const val EXTRA_TITLE = "title"
@@ -44,15 +55,32 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
     private lateinit var title: String
     private lateinit var startLocation: Location
 
+    private lateinit var locationService: FusedLocationProviderClient
+    private var gpsOn = false
+
+    private val locationRequest = createDefaultLocationRequest()
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult?) {
+            val l = p0?.lastLocation ?: return
+            val loc = l.toModelLocation()
+            viewModel.updateLocation(loc)
+            moveMarker(loc)
+        }
+    }
+
     private lateinit var latView: TextView
     private lateinit var lngView: TextView
+    private lateinit var titleView: TextView
 
     private var map: GoogleMap? = null
+    private var marker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_location)
         postponeEnterTransition()
+
+        locationService = LocationServices.getFusedLocationProviderClient(this)
 
         viewModel = getViewModel()
 
@@ -70,7 +98,7 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
 
         setupUI(enableUp = true)
 
-        val titleView = findViewById<TextView>(R.id.titleView)
+        titleView = findViewById<TextView>(R.id.titleView)
         latView = findViewById(R.id.latView)
         lngView = findViewById(R.id.lngView)
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -97,7 +125,7 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
             .draggable(true)
             .position(loc.toLatLng())
 
-        map.addMarker(options)
+        marker = map.addMarker(options)
         map.moveCamera(loc.toCameraUpdate())
 
         startPostponedEnterTransition()
@@ -134,6 +162,27 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
         finish()
     }
 
+    private fun setGps(on: Boolean = true) {
+        if (on && !gpsOn) {
+            if (checkLocationPermissions(this, REQUEST_LOCATION_CODE)) {
+                locationService.requestLocationUpdates(locationRequest, locationCallback, null)
+                viewModel.markDirty()
+            } else {
+                return
+            }
+        } else if (!on && gpsOn) {
+            locationService.removeLocationUpdates(locationCallback)
+        }
+
+        gpsOn = on
+        invalidateOptionsMenu()
+    }
+
+    private fun moveMarker(location: Location) {
+        marker?.position = location.toLatLng()
+        map?.animateCamera(location.toCameraUpdate())
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -146,6 +195,22 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
                 viewModel.markDirty()
                 viewModel.updateLocation(Location())
                 finishWithResult()
+                return true
+            }
+
+            R.id.gps -> {
+                val locating = !gpsOn
+                setGps(locating)
+
+                val str = if (locating) {
+                    R.string.started_location_finding
+                } else {
+                    R.string.stopped_location_finding
+                }
+
+                Snackbar.make(titleView, str, Snackbar.LENGTH_SHORT).show()
+
+                return true
             }
         }
 
@@ -161,12 +226,23 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        if (gpsOn) {
+            val gpsEntry = menu.findItem(R.id.gps)
+            gpsEntry.setIcon(R.drawable.ic_location_enabled_white_24dp)
+            gpsEntry.setTitle(R.string.disable_locating)
+        }
+
+        return true
+    }
+
     override fun onMarkerDragEnd(marker: Marker) {
         setCurrentLocation(marker)
     }
 
     override fun onMarkerDragStart(marker: Marker) {
         viewModel.markDirty()
+        setGps(false)
         setCurrentLocation(marker)
     }
 
@@ -177,5 +253,28 @@ class EditLocationActivity : BaseActivity(), GoogleMap.OnMarkerDragListener,
     override fun onMarkerClick(p0: Marker): Boolean {
         map?.animateCamera(p0.position.toCameraUpdate())
         return true
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            REQUEST_LOCATION_CODE -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setGps(true)
+                }
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onDestroy() {
+        if (gpsOn) {
+            locationService.removeLocationUpdates(locationCallback)
+        }
+        super.onDestroy()
     }
 }

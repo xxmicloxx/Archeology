@@ -17,14 +17,16 @@ import com.bumptech.glide.request.target.Target
 import de.mloy.archeology.R
 import de.mloy.archeology.model.Site
 
-class SiteListAdapter(private val sites: List<Site>, private val activity: SiteListActivity) :
+class SiteListAdapter(var sites: List<Site>, private val activity: SiteListActivity) :
     RecyclerView.Adapter<SiteListAdapter.ViewHolder>() {
+
     inner class ViewHolder(view: CardView) : RecyclerView.ViewHolder(view) {
         private val context = view.context
         private val title = view.findViewById<TextView>(R.id.titleTextView)
         private val latitude = view.findViewById<TextView>(R.id.latitudeTextView)
         private val longitude = view.findViewById<TextView>(R.id.longitudeTextView)
         private val visited = view.findViewById<ImageView>(R.id.visitedBox)
+        private val favorite = view.findViewById<ImageView>(R.id.favoriteBox)
         private val image = view.findViewById<ImageView>(R.id.previewImage)
         private var site: Site? = null
 
@@ -41,6 +43,7 @@ class SiteListAdapter(private val sites: List<Site>, private val activity: SiteL
 
             title.text = site.title
             visited.visibility = if (site.isVisited) View.VISIBLE else View.GONE
+            favorite.visibility = if (site.isFavorite) View.VISIBLE else View.GONE
 
             val imagePath = site.images.firstOrNull()
             Glide.with(image)
@@ -69,7 +72,6 @@ class SiteListAdapter(private val sites: List<Site>, private val activity: SiteL
                     }
                 })
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .dontTransform()
                 .into(image)
 
             site.location.apply {

@@ -1,7 +1,7 @@
 package de.mloy.archeology.model
 
 import android.content.Context
-import de.mloy.archeology.model.json.SiteJSONStore
+import de.mloy.archeology.model.firebase.SiteFirebaseStore
 
 interface SiteStore {
     companion object {
@@ -13,7 +13,7 @@ interface SiteStore {
         fun getInstance(context: Context): SiteStore {
             synchronized(this) {
                 if (instance == null) {
-                    instance = SiteJSONStore(context)
+                    instance = SiteFirebaseStore(context)
                 }
 
                 return instance!!

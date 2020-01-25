@@ -113,6 +113,7 @@
                     android:layout_marginEnd="8dp"
 
                     android:onClick="@{() -> presenter.changePassword()}"
+                    android:enabled="@{!presenter.vm.passwordChanging}"
 
                     android:text="@string/change_password"
 

@@ -8,12 +8,21 @@ import de.mloy.archeology.model.Site
 
 class SiteListViewModel(app: Application) : BaseViewModel(app) {
     private val sites = MutableLiveData<List<Site>>(siteStore.findAll())
+    var favoriteFilter = false
+        set(value) {
+            field = value
+            reload()
+        }
 
     fun getSites(): LiveData<List<Site>> {
         return sites
     }
 
     fun reload() {
-        sites.value = siteStore.findAll()
+        if (favoriteFilter) {
+            sites.value = siteStore.findAll().filter { it.isFavorite }
+        } else {
+            sites.value = siteStore.findAll()
+        }
     }
 }

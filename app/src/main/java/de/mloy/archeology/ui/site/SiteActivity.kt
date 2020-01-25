@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import de.mloy.archeology.BaseActivity
 import de.mloy.archeology.R
 import de.mloy.archeology.databinding.ActivitySiteBinding
@@ -137,12 +138,21 @@ class SiteActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_site, menu)
+        return true
+    }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         if (!presenter.vm.edit) {
             menu.findItem(R.id.delete).isVisible = false
         }
 
-        return true
+        if (presenter.vm.site.isFavorite) {
+            val favoriteItem = menu.findItem(R.id.favorite)
+            favoriteItem.setTitle(R.string.remove_from_favorites)
+            favoriteItem.setIcon(R.drawable.ic_star_white_24dp)
+        }
+
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -169,6 +179,44 @@ class SiteActivity : BaseActivity() {
             android.R.id.home -> {
                 onBackPressed()
                 return true
+            }
+
+            R.id.favorite -> {
+                val setFav = !presenter.vm.site.isFavorite
+                presenter.vm.site.isFavorite = setFav
+                if (presenter.vm.edit) {
+                    presenter.vm.siteStore.update(presenter.vm.site)
+                }
+
+                val str = if (setFav) {
+                    R.string.marked_as_favorite
+                } else {
+                    R.string.removed_from_favorites
+                }
+
+                Snackbar.make(binding.titleLayout, str, Snackbar.LENGTH_SHORT).show()
+
+                invalidateOptionsMenu()
+            }
+
+            R.id.share -> {
+                val loc = presenter.vm.getLocation().value!!
+                val title = presenter.vm.getTitle().value
+
+                val str = if (!loc.isValid) {
+                    getString(R.string.site_share_string_unknown_loc, title)
+                } else {
+                    getString(R.string.site_share_string, title, loc.lat, loc.lng)
+                }
+
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, str)
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(intent, null)
+                startActivity(shareIntent)
             }
 
             R.id.save -> {

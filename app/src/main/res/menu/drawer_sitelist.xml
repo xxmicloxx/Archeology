@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/commonGroup">
+        <item
+            android:id="@+id/map"
+            android:icon="@drawable/ic_map_black_24dp"
+            android:title="@string/overview_map" />
+    </group>
+
+    <group android:id="@+id/settingsGroup">
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/settings" />
+
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="@string/log_out" />
+    </group>
+
+</menu>

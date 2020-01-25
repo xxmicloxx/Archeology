@@ -22,8 +22,8 @@
     <string name="menu_item_view_in_gallery">View in gallery</string>
     <string name="edit_location_title">Edit location</string>
     <string name="icon_description_location_marker">Location marker icon</string>
-    <string name="latitude_value">Useless val 1 (lat): %f</string>
-    <string name="longitude_value">Useless val 2 (lng): %f</string>
+    <string name="latitude_value">Latitude: %f</string>
+    <string name="longitude_value">Longitude: %f</string>
     <string name="untitled_site">Untitled Site</string>
     <string name="site_discard_confirm_message">Cancel editing? Unsaved changes will be lost.</string>
     <string name="continue_editing">Continue editing</string>

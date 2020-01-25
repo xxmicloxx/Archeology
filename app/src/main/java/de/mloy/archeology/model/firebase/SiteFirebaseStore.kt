@@ -125,14 +125,14 @@ data class FirebaseSite(
     var images: List<String> = listOf(),
     var location: Location = Location(),
     var isVisited: Boolean = false,
-    var dateVisited: Long? = 0,
+    var dateVisited: Long? = null,
     var rating: Int = 0,
     var notes: String = "",
     var isFavorite: Boolean = false
 ) {
     fun toSite(): Site {
         val millis = dateVisited
-        val visited = if (millis == null || millis < 0L) null else LocalDate(millis)
+        val visited = if (millis == null || millis <= 0L) null else LocalDate(millis)
 
         return Site(
             id,

@@ -7,18 +7,24 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import de.mloy.archeology.BaseActivity
 import de.mloy.archeology.R
 import de.mloy.archeology.getViewModel
 import de.mloy.archeology.model.Site
 import de.mloy.archeology.ui.login.LoginActivity
+import de.mloy.archeology.ui.map.MapActivity
 import de.mloy.archeology.ui.settings.SettingsActivity
 import de.mloy.archeology.ui.site.SiteActivity
 
-class SiteListActivity : BaseActivity() {
+class SiteListActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
         const val RELOAD_REQUEST_CODE = 0
@@ -29,6 +35,8 @@ class SiteListActivity : BaseActivity() {
     }
 
     private lateinit var viewModel: SiteListViewModel
+    private lateinit var drawerToggle: ActionBarDrawerToggle
+    private lateinit var drawer: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +44,20 @@ class SiteListActivity : BaseActivity() {
 
         viewModel = getViewModel()
         setupUI()
+
+        drawer = findViewById(R.id.drawerLayout)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+
+        drawerToggle = ActionBarDrawerToggle(
+            this, drawer, toolbar,
+            R.string.drawer_open, R.string.drawer_close
+        )
+
+        drawer.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+
+        val navigationView = findViewById<NavigationView>(R.id.navigation)
+        navigationView.setNavigationItemSelectedListener(this)
 
         val siteList = findViewById<RecyclerView>(R.id.sitelist).apply {
             setHasFixedSize(true)
@@ -61,25 +83,30 @@ class SiteListActivity : BaseActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        if (viewModel.favoriteFilter) {
+            val fav = menu.findItem(R.id.favorite)
+            fav.setTitle(R.string.disable_filter)
+            fav.setIcon(R.drawable.ic_star_white_24dp)
+        }
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true
+        }
+
         when (item.itemId) {
+            R.id.favorite -> {
+                viewModel.favoriteFilter = !viewModel.favoriteFilter
+                invalidateOptionsMenu()
+            }
+
             R.id.add -> {
                 val intent = SiteActivity.create(this)
                 startActivityForResult(intent, RELOAD_REQUEST_CODE)
-                return true
-            }
-
-            R.id.settings -> {
-                val intent = SettingsActivity.create(this)
-                startActivity(intent)
-                return true
-            }
-
-            R.id.logout -> {
-                // go to login activity
-                val intent = LoginActivity.create(this)
-                startActivity(intent)
-                finish()
                 return true
             }
         }
@@ -100,5 +127,35 @@ class SiteListActivity : BaseActivity() {
     fun editSite(site: Site) {
         val intent = SiteActivity.create(this, site)
         startActivityForResult(intent, RELOAD_REQUEST_CODE)
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.map -> {
+                val intent = MapActivity.create(this)
+                startActivity(intent)
+            }
+
+            R.id.settings -> {
+                val intent = SettingsActivity.create(this)
+                startActivity(intent)
+            }
+
+            R.id.logout -> {
+                // log out
+                val auth = FirebaseAuth.getInstance()
+                auth.signOut()
+
+                // go to login activity
+                val intent = LoginActivity.create(this)
+                startActivity(intent)
+                finish()
+            }
+
+            else -> return false
+        }
+
+        drawer.closeDrawers()
+        return true
     }
 }

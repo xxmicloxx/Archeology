@@ -2,11 +2,13 @@ package de.mloy.archeology.ui.settings
 
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import de.mloy.archeology.R
 import de.mloy.archeology.getViewModel
 
 class SettingsPresenter(private val activity: SettingsActivity) {
     val vm: SettingsViewModel = activity.getViewModel()
+    private val auth = FirebaseAuth.getInstance()
 
     fun changePassword() {
         val pw1 = vm.getNewPassword().value!!
@@ -30,11 +32,30 @@ class SettingsPresenter(private val activity: SettingsActivity) {
             return
         }
 
-        vm.getNewPassword().value = ""
-        vm.getNewPasswordRetyped().value = ""
+        val user = auth.currentUser ?: return
+        vm.getPasswordChanging().value = true
 
-        Snackbar
-            .make(activity.binding.passwordEdit, R.string.password_changed, Snackbar.LENGTH_LONG)
-            .show()
+        user.updatePassword(pw1).addOnCompleteListener {
+            vm.getPasswordChanging().value = false
+
+            if (it.isSuccessful) {
+                Snackbar
+                    .make(
+                        activity.binding.passwordEdit,
+                        R.string.password_changed,
+                        Snackbar.LENGTH_LONG
+                    )
+                    .show()
+
+                vm.getNewPassword().value = ""
+                vm.getNewPasswordRetyped().value = ""
+
+            } else {
+                AlertDialog.Builder(activity)
+                    .setMessage(R.string.password_change_error)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+            }
+        }
     }
 }

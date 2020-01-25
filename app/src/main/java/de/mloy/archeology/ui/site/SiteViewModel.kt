@@ -16,6 +16,7 @@ class SiteViewModel(app: Application) : BaseViewModel(app) {
     private val notes = MutableLiveData<String>()
     private val visited = MutableLiveData<Boolean>()
     private val dateVisited = MutableLiveData<LocalDate?>()
+    private val rating = MutableLiveData<Int>()
     var edit = false
 
     lateinit var site: Site
@@ -27,6 +28,7 @@ class SiteViewModel(app: Application) : BaseViewModel(app) {
     fun getNotes(): MutableLiveData<String> = notes
     fun getVisited(): MutableLiveData<Boolean> = visited
     fun getDateVisited(): MutableLiveData<LocalDate?> = dateVisited
+    fun getRating(): MutableLiveData<Int> = rating
 
     val isDirty: Boolean
         get() = getUpdatedSite() != site
@@ -41,6 +43,7 @@ class SiteViewModel(app: Application) : BaseViewModel(app) {
         dateVisited.value = site.dateVisited
         visited.value = site.isVisited
         notes.value = site.notes
+        rating.value = site.rating
     }
 
     private fun getUpdatedSite(): Site =
@@ -51,7 +54,8 @@ class SiteViewModel(app: Application) : BaseViewModel(app) {
             location = location.value!!,
             isVisited = visited.value!!,
             dateVisited = dateVisited.value,
-            notes = notes.value!!
+            notes = notes.value!!,
+            rating = rating.value!!
         )
 
     fun commit() {
@@ -76,12 +80,18 @@ class SiteViewModel(app: Application) : BaseViewModel(app) {
     }
 
     fun setVisited(visited: Boolean = true) {
-        val wasVisited = getVisited().value!!
+        val wasVisited = this.visited.value!!
         if (visited && !wasVisited) {
-            getDateVisited().value = LocalDate.now()
+            dateVisited.value = LocalDate.now()
         } else if (!visited && wasVisited) {
-            getDateVisited().value = null
+            dateVisited.value = null
+            rating.value = 0
         }
-        getVisited().value = visited
+        this.visited.value = visited
+    }
+
+    fun updateRating(rating: Float) {
+        this.rating.value = rating.toInt()
+        setVisited()
     }
 }

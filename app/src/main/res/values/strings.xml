@@ -63,4 +63,18 @@
     <string name="login">Log in</string>
     <string name="login_icon_description">Login icon</string>
     <string name="log_out">Log out</string>
+    <string name="register_success">Registered successfully</string>
+    <string name="auth_failed">Authentication failed.</string>
+    <string name="unknown_email">Unknown email</string>
+    <string name="password_change_error">Password could not be changed</string>
+    <string name="enable_locating">Enable locating</string>
+    <string name="disable_locating">Disable locating</string>
+    <string name="drawer_open">Navigation drawer open</string>
+    <string name="drawer_close">Navigation drawer closed</string>
+    <string name="overview_map">Overview map</string>
+    <string name="mark_as_favorite">Mark as favorite</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="favorite">Favorite</string>
+    <string name="filter_for_favorites">Filter for favorites</string>
+    <string name="disable_filter">Disable filter</string>
 </resources>

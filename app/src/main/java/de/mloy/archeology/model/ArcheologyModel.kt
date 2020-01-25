@@ -10,13 +10,16 @@ import org.joda.time.LocalDate
 @Parcelize
 data class Site(
     var id: Long = 0,
+    var fbId: String = "",
     var title: String = "",
     var description: String = "",
     var images: List<String> = listOf(),
     var location: Location = Location(),
     var isVisited: Boolean = false,
     var dateVisited: LocalDate? = null,
-    var notes: String = ""
+    var rating: Int = 0,
+    var notes: String = "",
+    var isFavorite: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -37,3 +40,6 @@ fun Location.toCameraUpdate(): CameraUpdate =
 
 fun LatLng.toCameraUpdate(): CameraUpdate =
     CameraUpdateFactory.newLatLng(this)
+
+fun android.location.Location.toModelLocation(zoom: Float = 15f): Location =
+    Location(latitude, longitude, zoom)

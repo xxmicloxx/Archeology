@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.mloy.archeology">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +21,11 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/login_title" />
+
+        <activity
+            android:name=".ui.map.MapActivity"
+            android:label="@string/overview_map"
+            android:parentActivityName=".ui.sitelist.SiteListActivity" />
 
         <activity
             android:name=".ui.settings.SettingsActivity"
